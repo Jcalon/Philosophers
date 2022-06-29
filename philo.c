@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 16:13:23 by jcalon            #+#    #+#             */
-/*   Updated: 2022/06/29 12:48:06 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/06/29 15:07:41 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static int	check_args(char	**argv)
 	return (0);
 }
 
-int	init_args(t_arg *args, int argc, char **argv)
+static int	init_args(t_arg *args, int argc, char **argv)
 {
 	args->number_of_philosophers = ft_atoi(argv[1]);
 	args->time_to_die = ft_atoi(argv[2]);
@@ -44,34 +44,40 @@ int	init_args(t_arg *args, int argc, char **argv)
 		args->number_of_meal = ft_atoi(argv[5]);
 	else
 		args->number_of_meal = -1;
-	args->dead = 0;
+	if (args->number_of_philosophers < 1 || args->time_to_die < 1
+		|| args->time_to_eat < 1 || args->time_to_sleep < 1
+		|| (argc == 6 && args->number_of_meal < 1))
+		return (1);
 	return (0);
 }
 
-void *philosopher (void *num, t_arg *args);
+static int	init_struct(t_arg *args)
 {
-	int	id;
-	int i, left_chopstick, right_chopstick, f;
-
-    id = (int)num;
-    printf ("Philosopher %d is done thinking and now ready to eat.\n", id);
-    right_chopstick = id;
-    left_chopstick = id + 1;
-    /* Wrap around the chopsticks. */
-    if (left_chopstick == PHILOS)
-    	left_chopstick = 0;
-	while (f = food_on_table ())
+	args->philos = (t_philo *)malloc(sizeof(t_philo) * args->number_of_philosophers);
+	if (args->philos == NULL)
+		return (1);
+	args->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * args->number_of_philosophers);
+	if (args->forks == NULL)
 	{
-		get_token ();
-		grab_chopstick (id, right_chopstick, "right ");
-		grab_chopstick (id, left_chopstick, "left");
-		printf ("Philosopher %d: eating.\n", id);
-		usleep (DELAY * (FOOD - f + 1));
-		down_chopsticks (left_chopstick, right_chopstick);
-		return_token ();
-    }
-	printf("Philosopher %d is done eating.\n", id);
-	return (NULL);
+		free(args->philos);
+		return (1);
+	}
+	args->tids = (pthread_t *)malloc(sizeof(pthread_t) * args->number_of_philosophers);
+	if (args->tids == NULL)
+	{
+		free(args->philos);
+		free(args->forks);
+		return (1);
+	}
+	return (0);
+}
+
+static void	init_mutex(t_arg *args)
+{
+	size_t	i;
+
+	i = 0;
+	args->start =
 }
 
 int	main(int argc, char *argv[])
@@ -91,24 +97,7 @@ int	main(int argc, char *argv[])
 	}
 	if (init_args(&args, argc, argv) == 1)
 		return (EXIT_FAILURE);
-	pthread_mutex_init(args.token, NULL);
-	pthread_mutex_init(args.phil_with_token, NULL);
-	i = 0;
-	while (i < args.number_of_philosophers)
-	{
-		pthread_mutex_init(&args.forks[i], NULL);
-		i++;
-	}
-	i = 0;
-	while (i < args.number_of_philosophers)
-	{
-		pthread_create(&args.tids[i], NULL, philosopher, (void *)i);
-		i++;
-	}
-	i = 0;
-	while (i < args.number_of_philosophers)
-	{
-		pthread_join(&args.tids[i], NULL);
-		i++;
-	}
+	if (init_struct(&args))
+		return (EXIT_FAILURE);
+	init_mutex(&args);
 }
