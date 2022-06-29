@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 16:22:36 by jcalon            #+#    #+#             */
-/*   Updated: 2022/06/29 14:43:23 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/06/29 15:41:02 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <sys/time.h>
 # include <pthread.h>
 
-struct	s_struct;
+struct	s_arg;
 
 typedef struct s_philo {
 	int				id;
@@ -28,7 +28,7 @@ typedef struct s_philo {
 	int				left_fork;
 	int				right_fork;
 	long			last;
-	struct s_struct	*args;
+	struct s_arg	*args;
 }				t_philo;
 
 typedef struct s_arg
@@ -48,5 +48,6 @@ typedef struct s_arg
 
 int	ft_atoi(const char *nptr);
 int	ft_isdigit(int c);
+int	create_threads(t_arg *args);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 16:13:23 by jcalon            #+#    #+#             */
-/*   Updated: 2022/06/29 15:07:41 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/06/29 15:18:51 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,19 @@ static void	init_mutex(t_arg *args)
 	size_t	i;
 
 	i = 0;
-	args->start =
+	args->start = ft_time();
+	pthread_mutex_init(&args->print, NULL);
+	while (i < args->number_of_philosophers)
+	{
+		args->philos[i].args = args;
+		args->philos[i].id = i + 1;
+		args->philos[i].eat_done = 0;
+		args->philos[i].left_fork = i;
+		args->philos[i].right_fork = (i + 1) % args->number_of_philosophers;
+		args->philos[i].last = args->start;
+		pthread_mutex_init(&args->forks[i], NULL);
+		i++;
+	}
 }
 
 int	main(int argc, char *argv[])
@@ -100,4 +112,6 @@ int	main(int argc, char *argv[])
 	if (init_struct(&args))
 		return (EXIT_FAILURE);
 	init_mutex(&args);
+	if (create_threads(&args))
+		return (EXIT_FAILURE);
 }
