@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 16:22:36 by jcalon            #+#    #+#             */
-/*   Updated: 2022/06/29 15:41:02 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/06/29 18:09:29 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,12 @@ typedef struct s_arg
 	pthread_mutex_t	print;
 }				t_arg;
 
-int	ft_atoi(const char *nptr);
-int	ft_isdigit(int c);
-int	create_threads(t_arg *args);
+int		ft_atoi(const char *nptr);
+int		ft_isdigit(int c);
+int		create_threads(t_arg *args);
+long	ft_time(void);
+void	custom_printf(char *s, t_philo *philo);
+int		check_status(t_arg *args);
+long	ft_time_diff(long clock);
 
 #endif

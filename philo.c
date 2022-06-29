@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 16:13:23 by jcalon            #+#    #+#             */
-/*   Updated: 2022/06/29 15:18:51 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/06/29 18:21:32 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int	check_args(char	**argv)
 		j = 0;
 		while (argv[i][j])
 		{
-			if (!ft_is_digit(argv[i][j]))
+			if (!ft_isdigit(argv[i][j]))
 				return (1);
 			j++;
 		}
@@ -74,7 +74,7 @@ static int	init_struct(t_arg *args)
 
 static void	init_mutex(t_arg *args)
 {
-	size_t	i;
+	int	i;
 
 	i = 0;
 	args->start = ft_time();
@@ -92,17 +92,33 @@ static void	init_mutex(t_arg *args)
 	}
 }
 
+void	ft_end(t_arg *args)
+{
+	int	i;
+
+	i = 0;
+	while (i < args->number_of_philosophers)
+	{
+		pthread_mutex_destroy(&args->forks[i]);
+		i++;
+	}
+	pthread_mutex_destroy(&args->print);
+	free(args->forks);
+	free(args->tids);
+	free(args->philos);
+}
+
 int	main(int argc, char *argv[])
 {
 	t_arg	args;
-	size_t	i;
+	int	i;
 
 	if (argc < 5 || argc > 6)
 	{
 		printf("Incorrect number of arguments\n");
 		return (EXIT_FAILURE);
 	}
-	if (!check_args(argv))
+	if (check_args(argv))
 	{
 		printf("Error, write : ./philo : number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n");
 		return (EXIT_FAILURE);
@@ -114,4 +130,13 @@ int	main(int argc, char *argv[])
 	init_mutex(&args);
 	if (create_threads(&args))
 		return (EXIT_FAILURE);
+	i = 0;
+	while (i < args.number_of_philosophers)
+	{
+		pthread_detach(args.tids[i]);
+		i++;
+	}
+	check_status(&args);
+	ft_end(&args);
+	return (0);
 }
