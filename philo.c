@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 16:13:23 by jcalon            #+#    #+#             */
-/*   Updated: 2022/06/23 14:13:36 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/06/29 12:48:06 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,32 @@ int	init_args(t_arg *args, int argc, char **argv)
 	return (0);
 }
 
+void *philosopher (void *num, t_arg *args);
+{
+	int	id;
+	int i, left_chopstick, right_chopstick, f;
+
+    id = (int)num;
+    printf ("Philosopher %d is done thinking and now ready to eat.\n", id);
+    right_chopstick = id;
+    left_chopstick = id + 1;
+    /* Wrap around the chopsticks. */
+    if (left_chopstick == PHILOS)
+    	left_chopstick = 0;
+	while (f = food_on_table ())
+	{
+		get_token ();
+		grab_chopstick (id, right_chopstick, "right ");
+		grab_chopstick (id, left_chopstick, "left");
+		printf ("Philosopher %d: eating.\n", id);
+		usleep (DELAY * (FOOD - f + 1));
+		down_chopsticks (left_chopstick, right_chopstick);
+		return_token ();
+    }
+	printf("Philosopher %d is done eating.\n", id);
+	return (NULL);
+}
+
 int	main(int argc, char *argv[])
 {
 	t_arg	args;
@@ -70,6 +96,19 @@ int	main(int argc, char *argv[])
 	i = 0;
 	while (i < args.number_of_philosophers)
 	{
-		pthread_mutex_init();
+		pthread_mutex_init(&args.forks[i], NULL);
+		i++;
+	}
+	i = 0;
+	while (i < args.number_of_philosophers)
+	{
+		pthread_create(&args.tids[i], NULL, philosopher, (void *)i);
+		i++;
+	}
+	i = 0;
+	while (i < args.number_of_philosophers)
+	{
+		pthread_join(&args.tids[i], NULL);
+		i++;
 	}
 }
