@@ -6,16 +6,25 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 15:02:44 by jcalon            #+#    #+#             */
-/*   Updated: 2022/06/29 18:29:58 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/06/30 19:07:46 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	ft_wait(int id)
+static void ft_usleep(long time)
 {
-	if (id % 2 == 0)
-		usleep(200);
+	long	alarm;
+
+	alarm = ft_time() + time;
+	while (ft_time() < alarm)
+		usleep(time);
+}
+
+static void	ft_wait(t_philo *philo)
+{
+	if (philo->id % 2 == 0)
+		usleep(philo->args->time_to_eat);
 }
 
 long	ft_time(void)
@@ -28,13 +37,19 @@ long	ft_time(void)
 	return (now);
 }
 
-static void ft_usleep(long time)
+static void test(t_philo *philo)
 {
-	long	alarm;
-
-	alarm = ft_time() + time;
-	while (ft_time() < alarm)
-		usleep(time);
+		pthread_mutex_lock(&philo->args->forks[philo->right_fork]);
+		custom_printf("has taken a fork", philo);
+		pthread_mutex_lock(&philo->args->forks[philo->left_fork]);
+		custom_printf("has taken a fork", philo);
+		custom_printf("is eating", philo);
+		pthread_mutex_lock(&philo->fed);
+		philo->last = ft_time();
+		pthread_mutex_unlock(&philo->fed);
+		ft_usleep(philo->args->time_to_eat);
+		pthread_mutex_unlock(&philo->args->forks[philo->left_fork]);
+		pthread_mutex_unlock(&philo->args->forks[philo->right_fork]);
 }
 
 static void *eat_think_sleep(void *arg)
@@ -44,18 +59,25 @@ static void *eat_think_sleep(void *arg)
 
 	philo = (t_philo *)arg;
 	all_full = 0;
-	while (1)
+	while (philo->args->dead != 1)
 	{
-		ft_wait(philo->id);
-		pthread_mutex_lock(&philo->args->forks[philo->left_fork]);
-		custom_printf("has taken a fork", philo);
-		pthread_mutex_lock(&philo->args->forks[philo->right_fork]);
-		custom_printf("has taken a fork", philo);
-		custom_printf("is eating", philo);
-		philo->last = ft_time();
-		ft_usleep(philo->args->time_to_eat);
-		pthread_mutex_unlock(&philo->args->forks[philo->right_fork]);
-		pthread_mutex_unlock(&philo->args->forks[philo->left_fork]);
+		ft_wait(philo);
+		if (philo->right_fork == 0)
+			test(philo);
+		else
+		{
+			pthread_mutex_lock(&philo->args->forks[philo->left_fork]);
+			custom_printf("has taken a fork", philo);
+			pthread_mutex_lock(&philo->args->forks[philo->right_fork]);
+			custom_printf("has taken a fork", philo);
+			custom_printf("is eating", philo);
+			pthread_mutex_lock(&philo->fed);
+			philo->last = ft_time();
+			pthread_mutex_unlock(&philo->fed);
+			ft_usleep(philo->args->time_to_eat);
+			pthread_mutex_unlock(&philo->args->forks[philo->right_fork]);
+			pthread_mutex_unlock(&philo->args->forks[philo->left_fork]);
+		}
 		if (philo->args->number_of_meal == ++all_full)
 			break;
 		custom_printf("is sleeping", philo);
@@ -78,5 +100,7 @@ int	create_threads(t_arg *args)
 			return (1);
 		i++;
 	}
+	if (!check_status(args))
+		ft_end(args);
 	return (0);
 }

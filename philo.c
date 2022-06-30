@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 16:13:23 by jcalon            #+#    #+#             */
-/*   Updated: 2022/06/29 18:21:32 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/06/30 18:30:14 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ static int	init_args(t_arg *args, int argc, char **argv)
 		|| args->time_to_eat < 1 || args->time_to_sleep < 1
 		|| (argc == 6 && args->number_of_meal < 1))
 		return (1);
+	args->dead = 0;
 	return (0);
 }
 
@@ -88,6 +89,7 @@ static void	init_mutex(t_arg *args)
 		args->philos[i].right_fork = (i + 1) % args->number_of_philosophers;
 		args->philos[i].last = args->start;
 		pthread_mutex_init(&args->forks[i], NULL);
+		pthread_mutex_init(&args->philos[i].fed, NULL);
 		i++;
 	}
 }
@@ -100,9 +102,9 @@ void	ft_end(t_arg *args)
 	while (i < args->number_of_philosophers)
 	{
 		pthread_mutex_destroy(&args->forks[i]);
+		pthread_join(args->tids[i], NULL);
 		i++;
 	}
-	pthread_mutex_destroy(&args->print);
 	free(args->forks);
 	free(args->tids);
 	free(args->philos);
@@ -111,7 +113,6 @@ void	ft_end(t_arg *args)
 int	main(int argc, char *argv[])
 {
 	t_arg	args;
-	int	i;
 
 	if (argc < 5 || argc > 6)
 	{
@@ -130,13 +131,5 @@ int	main(int argc, char *argv[])
 	init_mutex(&args);
 	if (create_threads(&args))
 		return (EXIT_FAILURE);
-	i = 0;
-	while (i < args.number_of_philosophers)
-	{
-		pthread_detach(args.tids[i]);
-		i++;
-	}
-	check_status(&args);
-	ft_end(&args);
 	return (0);
 }
