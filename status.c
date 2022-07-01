@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 15:42:22 by jcalon            #+#    #+#             */
-/*   Updated: 2022/06/30 18:48:03 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/07/01 17:12:52 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,9 @@ int		check_status(t_arg *args)
 			if (args->philos[i].eat_done == 0
 				&& ft_time_diff(args->philos[i].last) > args->time_to_die)
 			{
+				pthread_mutex_lock(&args->over);
 				args->dead = 1;
+				pthread_mutex_unlock(&args->over);
 				printf("%ld %d died\n", ft_time_diff(args->start), args->philos[i].id);
 				pthread_mutex_unlock(&args->philos[i].fed);
 				pthread_mutex_unlock(&args->print);

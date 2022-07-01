@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 15:02:44 by jcalon            #+#    #+#             */
-/*   Updated: 2022/06/30 19:07:46 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/07/01 17:57:12 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,18 @@ static void test(t_philo *philo)
 		pthread_mutex_unlock(&philo->args->forks[philo->right_fork]);
 }
 
+static int	mort(t_philo* philo)
+{
+	pthread_mutex_lock(&philo->args->over);
+	if (philo->args->dead != 1)
+	{
+		pthread_mutex_unlock(&philo->args->over);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->args->over);
+	return (0);
+}
+
 static void *eat_think_sleep(void *arg)
 {
 	t_philo *philo;
@@ -59,7 +71,7 @@ static void *eat_think_sleep(void *arg)
 
 	philo = (t_philo *)arg;
 	all_full = 0;
-	while (philo->args->dead != 1)
+	while (mort(philo) == 1)
 	{
 		ft_wait(philo);
 		if (philo->right_fork == 0)
@@ -84,7 +96,9 @@ static void *eat_think_sleep(void *arg)
 		ft_usleep(philo->args->time_to_sleep);
 		custom_printf("is thinking", philo);
 	}
+	pthread_mutex_lock(&philo->fed);
 	philo->eat_done = 1;
+	pthread_mutex_unlock(&philo->fed);
 	return (NULL);
 }
 
@@ -93,6 +107,14 @@ int	create_threads(t_arg *args)
 	int	i;
 
 	i = 0;
+	if (args->number_of_philosophers == 1)
+	{
+		printf("%ld %d has taken a fork\n", ft_time_diff(args->start), args->philos[i].id);
+		ft_usleep(args->time_to_die);
+		printf("%ld %d died\n", ft_time_diff(args->start), args->philos[i].id);
+		ft_end(args);
+		return (0);
+	}
 	while (i < args->number_of_philosophers)
 	{
 		if (pthread_create(&args->tids[i], NULL,
