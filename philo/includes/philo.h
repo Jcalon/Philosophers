@@ -6,14 +6,13 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 16:22:36 by jcalon            #+#    #+#             */
-/*   Updated: 2022/07/03 18:36:11 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/07/03 19:45:50 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-# include <strings.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
@@ -40,7 +39,6 @@ typedef struct s_arg
 	int				time_to_sleep;
 	int				number_of_meal;
 	long			start;
-	int				philo_id;
 	int				dead;
 	t_philo			*philos;
 	pthread_t		*tids;
