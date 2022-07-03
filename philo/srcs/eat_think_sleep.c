@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 15:02:44 by jcalon            #+#    #+#             */
-/*   Updated: 2022/07/03 19:14:51 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/07/03 19:25:15 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,12 @@ int	create_threads(t_arg *args)
 	i = 0;
 	if (args->number_of_philosophers == 1)
 	{
+		pthread_mutex_lock(&args->forks[args->philos->left_fork]);
 		printf("%ld %d has taken a fork\n", ft_time_diff(args->start),
 			args->philos[i].id);
 		ft_usleep(args->time_to_die);
 		printf("%ld %d died\n", ft_time_diff(args->start), args->philos[i].id);
+		pthread_mutex_unlock(&args->forks[args->philos->left_fork]);
 		ft_end(args);
 		return (0);
 	}
