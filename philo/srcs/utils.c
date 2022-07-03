@@ -6,9 +6,11 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 17:25:01 by jcalon            #+#    #+#             */
-/*   Updated: 2022/06/29 14:45:21 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/07/03 16:34:20 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "philo.h"
 
 int	ft_atoi(const char *nptr)
 {
@@ -39,4 +41,27 @@ int	ft_isdigit(int c)
 	if (c < '0' || c > '9')
 		return (0);
 	return (1);
+}
+
+void	ft_end(t_arg *args)
+{
+	int	i;
+
+	i = 0;
+	while (i < args->number_of_philosophers && args->number_of_philosophers > 1)
+	{
+		pthread_join(args->tids[i], NULL);
+		i++;
+	}
+	free(args->forks);
+	free(args->tids);
+	free(args->philos);
+}
+
+void	custom_printf(char *s, t_philo *philo)
+{
+	pthread_mutex_lock(&philo->args->print);
+	if (philo->args->dead != 1)
+		printf("%ld %d %s\n", ft_time_diff(philo->args->start), philo->id, s);
+	pthread_mutex_unlock(&philo->args->print);
 }

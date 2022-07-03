@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 16:13:23 by jcalon            #+#    #+#             */
-/*   Updated: 2022/07/01 17:41:41 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/07/03 16:38:59 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,16 +54,19 @@ static int	init_args(t_arg *args, int argc, char **argv)
 
 static int	init_struct(t_arg *args)
 {
-	args->philos = (t_philo *)malloc(sizeof(t_philo) * args->number_of_philosophers);
+	args->philos = (t_philo *)malloc(sizeof(t_philo)
+			* args->number_of_philosophers);
 	if (args->philos == NULL)
 		return (1);
-	args->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * args->number_of_philosophers);
+	args->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)
+			* args->number_of_philosophers);
 	if (args->forks == NULL)
 	{
 		free(args->philos);
 		return (1);
 	}
-	args->tids = (pthread_t *)malloc(sizeof(pthread_t) * args->number_of_philosophers);
+	args->tids = (pthread_t *)malloc(sizeof(pthread_t)
+			* args->number_of_philosophers);
 	if (args->tids == NULL)
 	{
 		free(args->philos);
@@ -95,21 +98,6 @@ static void	init_mutex(t_arg *args)
 	}
 }
 
-void	ft_end(t_arg *args)
-{
-	int	i;
-
-	i = 0;
-	while (i < args->number_of_philosophers && args->number_of_philosophers > 1)
-	{
-		pthread_join(args->tids[i], NULL);
-		i++;
-	}
-	free(args->forks);
-	free(args->tids);
-	free(args->philos);
-}
-
 int	main(int argc, char *argv[])
 {
 	t_arg	args;
@@ -121,7 +109,8 @@ int	main(int argc, char *argv[])
 	}
 	if (check_args(argv))
 	{
-		printf("Error, write : ./philo : number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n");
+		printf("Error, write : ./philo : number_of_philosophers time_to_die ");
+		printf("time_to_eat time_to_sleep [number_of_times_each_must_eat]\n");
 		return (EXIT_FAILURE);
 	}
 	if (init_args(&args, argc, argv) == 1)
