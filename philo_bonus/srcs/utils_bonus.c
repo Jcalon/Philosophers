@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   utils_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 17:25:01 by jcalon            #+#    #+#             */
-/*   Updated: 2022/07/03 20:50:32 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/07/03 21:11:02 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 int	ft_atoi(const char *nptr)
 {
@@ -48,20 +48,10 @@ void	ft_end(t_arg *args)
 	int	i;
 
 	i = 0;
-	while (i < args->number_of_philosophers && args->number_of_philosophers > 1)
+	while (i < args->number_of_philosophers)
 	{
-		pthread_join(args->tids[i], NULL);
+		kill(args->pid_philo[i], SIGKILL);
 		i++;
 	}
-	free(args->forks);
-	free(args->tids);
-	free(args->philos);
-}
-
-void	custom_printf(char *s, t_philo *philo)
-{
-	pthread_mutex_lock(&philo->args->print);
-	if (philo->args->dead != 1)
-		printf("%ld %d %s\n", ft_time_diff(philo->args->start), philo->id, s);
-	pthread_mutex_unlock(&philo->args->print);
+	free(args->pid_philo);
 }
