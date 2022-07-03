@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 15:02:44 by jcalon            #+#    #+#             */
-/*   Updated: 2022/07/03 16:41:11 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/07/03 18:42:08 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static void	right(t_philo *philo)
 static void	left(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->args->forks[philo->left_fork]);
-	custom_printf("has taken a fork", philo);
+	custom_printf("has taken a left fork", philo);
 	pthread_mutex_lock(&philo->args->forks[philo->right_fork]);
 	custom_printf("has taken a fork", philo);
 	custom_printf("is eating", philo);
@@ -63,8 +63,8 @@ static void	*eat_think_sleep(void *arg)
 	all_full = 0;
 	while (mort(philo) == 1)
 	{
-		ft_wait(philo);
-		if (philo->right_fork == 0)
+		if ((philo->id) % 2 == 0
+			&& philo->id + 1 != philo->args->number_of_philosophers)
 			right(philo);
 		else
 		{

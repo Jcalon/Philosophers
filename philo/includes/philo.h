@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 16:22:36 by jcalon            #+#    #+#             */
-/*   Updated: 2022/07/03 16:36:48 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/07/03 18:36:11 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,9 @@ int		check_status(t_arg *args);
 
 int		ft_atoi(const char *nptr);
 int		ft_isdigit(int c);
-void	custom_printf(char *s, t_philo *philo);
+size_t	ft_strlen(const char *s);
 void	ft_end(t_arg *args);
+void	custom_printf(char *s, t_philo *philo);
 
 long	ft_time_diff(long clock);
 long	ft_time(void);
