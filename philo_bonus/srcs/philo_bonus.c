@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 16:13:23 by jcalon            #+#    #+#             */
-/*   Updated: 2022/07/04 10:55:51 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/07/04 11:48:12 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,8 @@ static int	init_sem(t_arg *args)
 	sem_unlink("print");
 	sem_unlink("dead");
 	sem_unlink("full");
-	args->forks = sem_open("forks", O_CREAT | O_EXCL, S_IRWXU, args->number_of_philosophers);
+	args->forks = sem_open("forks", O_CREAT
+			| O_EXCL, S_IRWXU, args->number_of_philosophers);
 	args->print = sem_open("print", O_CREAT | O_EXCL, S_IRWXU, 1);
 	args->dead = sem_open("dead", O_CREAT | O_EXCL, S_IRWXU, 0);
 	if (args->number_of_meal)
@@ -82,6 +83,7 @@ static int	init_sem(t_arg *args)
 int	main(int argc, char *argv[])
 {
 	t_arg	args;
+
 	if (argc < 5 || argc > 6)
 	{
 		printf("Incorrect number of arguments\n");

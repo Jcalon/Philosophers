@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 16:22:36 by jcalon            #+#    #+#             */
-/*   Updated: 2022/07/04 10:42:12 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/07/04 11:47:29 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 # include <fcntl.h>
 # include <signal.h>
 # include <string.h>
-#include <sys/stat.h>
+# include <sys/stat.h>
 
 struct	s_arg;
 
