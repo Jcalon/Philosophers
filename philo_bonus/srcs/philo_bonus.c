@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 16:13:23 by jcalon            #+#    #+#             */
-/*   Updated: 2022/07/03 21:09:25 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/07/04 10:55:51 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,11 @@ static int	init_args(t_arg *args, int argc, char **argv)
 	if (argc == 6)
 		args->number_of_meal = ft_atoi(argv[5]);
 	else
-		args->number_of_meal = -1;
+		args->number_of_meal = 0;
 	if (args->number_of_philosophers < 1 || args->time_to_die < 1
 		|| args->time_to_eat < 1 || args->time_to_sleep < 1
 		|| (argc == 6 && args->number_of_meal < 1))
 		return (1);
-	args->philos.total_meal_eaten = 0;
 	return (0);
 }
 
@@ -63,11 +62,11 @@ static int	init_sem(t_arg *args)
 	sem_unlink("print");
 	sem_unlink("dead");
 	sem_unlink("full");
-	args->forks = sem_open("forks", O_CREAT | O_EXCL, args->number_of_meal);
-	args->print = sem_open("print", O_CREAT | O_EXCL, 1);
-	args->dead = sem_open("dead", O_CREAT | O_EXCL, 0);
+	args->forks = sem_open("forks", O_CREAT | O_EXCL, S_IRWXU, args->number_of_philosophers);
+	args->print = sem_open("print", O_CREAT | O_EXCL, S_IRWXU, 1);
+	args->dead = sem_open("dead", O_CREAT | O_EXCL, S_IRWXU, 0);
 	if (args->number_of_meal)
-		args->full = sem_open("full", O_CREAT | O_EXCL, 0);
+		args->full = sem_open("full", O_CREAT | O_EXCL, S_IRWXU, 0);
 	if (args->number_of_meal)
 	{
 		if (pthread_create(&args->status, NULL, &check_meals, args))
@@ -83,7 +82,6 @@ static int	init_sem(t_arg *args)
 int	main(int argc, char *argv[])
 {
 	t_arg	args;
-
 	if (argc < 5 || argc > 6)
 	{
 		printf("Incorrect number of arguments\n");

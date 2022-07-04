@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 17:25:01 by jcalon            #+#    #+#             */
-/*   Updated: 2022/07/03 21:11:02 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/07/04 10:52:35 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,5 +53,10 @@ void	ft_end(t_arg *args)
 		kill(args->pid_philo[i], SIGKILL);
 		i++;
 	}
+	sem_close(args->forks);
+	sem_close(args->print);
+	sem_close(args->dead);
+	if (args->number_of_meal)
+		sem_close(args->full);
 	free(args->pid_philo);
 }

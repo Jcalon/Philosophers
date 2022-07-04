@@ -6,7 +6,7 @@
 #    By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/03 16:05:20 by jcalon            #+#    #+#              #
-#    Updated: 2022/07/03 20:54:54 by jcalon           ###   ########.fr        #
+#    Updated: 2022/07/04 10:57:51 by jcalon           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,4 +39,4 @@ fclean: clean
 
 re:		fclean all
 
-.PHONY: all clean fclean re re_bonus bonus
+.PHONY: all clean fclean re

@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 15:02:44 by jcalon            #+#    #+#             */
-/*   Updated: 2022/07/03 21:10:35 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/07/04 10:22:53 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ static void	*eat_think_sleep(void *arg)
 	return (NULL);
 }
 
-static int	init_philo(t_arg *args)
+static void	init_philo(t_arg *args)
 {
 	args->philos.last = ft_time();
 	if (pthread_create(&args->status, NULL, &check_status, args))
@@ -70,7 +70,6 @@ static int	init_philo(t_arg *args)
 		sem_post(args->dead);
 	}
 	pthread_detach(args->status);
-	return (0);
 }
 
 int	philo(t_arg *args)
@@ -89,10 +88,9 @@ int	philo(t_arg *args)
 				kill(args->pid_philo[i], SIGKILL);
 			return (1);
 		}
-		else
+		else if (args->pid_philo[i] == 0)
 		{
-			if (init_philo(args))
-				return (1);
+			init_philo(args);
 			eat_think_sleep(args);
 		}
 		i++;

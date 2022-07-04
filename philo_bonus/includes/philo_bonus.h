@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 16:22:36 by jcalon            #+#    #+#             */
-/*   Updated: 2022/07/03 21:09:15 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/07/04 10:42:12 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,13 @@
 # include <fcntl.h>
 # include <signal.h>
 # include <string.h>
+#include <sys/stat.h>
 
 struct	s_arg;
 
 typedef struct s_philo {
 	size_t			id;
-	int				eat_done;
 	size_t			total_meal_eaten;
-	pthread_t		status_tid;
 	time_t			last;
 }				t_philo;
 
